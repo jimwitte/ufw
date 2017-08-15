@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: Jim Witte
+  description: configure ufw
+  company:
+  license: BSD
+  min_ansible_version: 2.3
+  platforms:
+    - name: Ubuntu
+      versions:
+        - xenial
+  galaxy_tags:
+    - networking
+    - system
+dependencies: []

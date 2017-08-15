@@ -1,0 +1,60 @@
+---
+# tasks file for ufw
+
+- name: install ufw package
+  apt:
+    name: ufw
+    state: present
+
+- name: set ufw IPv6
+  lineinfile:
+    dest: /etc/default/ufw
+    regexp: '^IPV6='
+    line: "IPV6={{ ufw_ipv6 }}"
+    state: present
+  notify:
+    - reload ufw
+
+- name: set ufw logging
+  ufw:
+    logging: "{{ ufw_logging }}"
+
+- name: set incoming policy
+  ufw:
+    policy: "{{ ufw_incoming_policy }}"
+    direction: incoming
+
+- name: set ougoing policy
+  ufw:
+    policy: "{{ ufw_outgoing_policy }}"
+    direction: outgoing
+
+- name: set routed policy
+  ufw:
+    policy: "{{ ufw_routed_policy }}"
+    direction: routed
+
+- name: add default ufw rules
+  ufw:
+    rule: "{{ item.rule|default('allow') }}"
+    proto: "{{ item.proto|default('tcp') }}"
+    src: "{{ item.src|default(omit) }}"
+    to_port: "{{ item.to_port|default(omit) }}"
+  with_flattened:
+    - "{{ default_ufw_rules|default([]) }}"
+  tags:
+    - default
+
+- name: add ufw rules
+  ufw:
+    rule: "{{ item.rule|default('allow') }}"
+    proto: "{{ item.proto|default('tcp') }}"
+    src: "{{ item.src|default(omit) }}"
+    to_port: "{{ item.to_port|default(omit) }}"
+  with_flattened:
+    - "{{ ufw_rules|default([]) }}"
+
+- name: enable ufw
+  ufw:
+    state: enabled
+  when: ufw_enable

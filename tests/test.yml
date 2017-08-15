@@ -1,0 +1,4 @@
+---
+- hosts: all
+  roles:
+    - {role: ufw, ufw_rules: "{{ [ufw_role.ssh, ufw_role.web] }}"}

@@ -1,0 +1,40 @@
+---
+# defaults file for ufw
+#
+#  ufw roles are lists of firewall rules.
+#  use ufw roles to define standard sets of firewall rules
+
+ufw_role:
+  web:
+    - to_port: 80
+    - to_port: 443
+  jumphosts:
+    - to_port: 22
+      src: "192.168.1.100"  # example
+    - to_port: 22
+      src: "192.168.1.101"  # example
+  vault:
+    - to_port: 8200
+  mongo:
+    - to_port: 27017
+      src: "192.168.1.100"  # example
+  ssh:
+    - to_port: 22
+
+ufw_enable: true
+ufw_incoming_policy: "deny"
+ufw_ipv6: "no"
+ufw_logging: "off"
+ufw_outgoing_policy: "allow"
+ufw_routed_policy: "deny"
+
+default_ufw_rules:
+  - "{{ ufw_role.jumphosts }}"
+
+# add ufw_rules in playbook to add additional ufw rules
+# ufw_rules:
+#   - rule: "allow"
+#     proto: "tcp"
+#     src: "any"
+#     to_port: 22
+#   - "{{ ufw_role.ssh }}"
